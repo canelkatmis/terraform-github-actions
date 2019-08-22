@@ -39,7 +39,7 @@ if [[ ! -z "$TF_ACTION_WORKSPACE" ]] && [[ "$TF_ACTION_WORKSPACE" != "default" ]
 fi
 
 set +e
-OUTPUT=$(sh -c "TF_IN_AUTOMATION=true terraform apply -no-color -auto-approve -input=false $*" 2>&1)
+OUTPUT=$(sh -c "TF_IN_AUTOMATION=true terraform destroy -no-color -auto-approve -input=false $*" 2>&1)
 SUCCESS=$?
 echo "$OUTPUT"
 set -e
@@ -55,14 +55,14 @@ fi
 COMMENT=""
 if [ $SUCCESS -ne 0 ]; then
     OUTPUT=$(wrap "$OUTPUT")
-    COMMENT="#### \`terraform apply\` Failed
+    COMMENT="#### \`terraform destroy\` Failed
 $OUTPUT
 
 *Workflow: \`$GITHUB_WORKFLOW\`, Action: \`$GITHUB_ACTION\`*"
 else
     # Call wrap to optionally wrap our output in a collapsible markdown section.
     OUTPUT=$(wrap "$OUTPUT")
-    COMMENT="#### \`terraform apply\` Success
+    COMMENT="#### \`terraform destroy\` Success
 $OUTPUT
 
 *Workflow: \`$GITHUB_WORKFLOW\`, Action: \`$GITHUB_ACTION\`*"
