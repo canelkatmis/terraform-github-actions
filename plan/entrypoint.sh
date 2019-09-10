@@ -80,6 +80,7 @@ fi
 # Post the comment.
 PAYLOAD=$(echo '{}' | jq --arg body "$COMMENT" '.body = $body')
 COMMITS_URL=$(cat /github/workflow/event.json | jq -r .repository.commits_url)
+echo $COMMITS_URL
 curl -s -S -H "Authorization: token $GITHUB_TOKEN" --header "Content-Type: application/json" --data "$PAYLOAD" "$COMMITS_URL"/comments
 cat /github/workflow/event.json
 exit $SUCCESS
