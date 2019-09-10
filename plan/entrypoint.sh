@@ -79,10 +79,9 @@ fi
 
 # Post the comment.
 PAYLOAD=$(echo '{}' | jq --arg body "$COMMENT" '.body = $body')
-
 BASE=https://api.github.com
 REPO_URL="${BASE}/repos/${GITHUB_REPOSITORY}"
-
 COMMITS_URL=${REPO_URL}/commits/${GITHUB_SHA}/comments
-curl -s -S -H "Authorization: token $GITHUB_TOKEN" --header "Content-Type: application/json" --data "$PAYLOAD" "$COMMITS_URL"
+
+curl -s -S -H "Authorization: token $GITHUB_TOKEN" --header "Content-Type: application/json" --data "$PAYLOAD" "$COMMITS_URL" > /dev/null
 exit $SUCCESS
