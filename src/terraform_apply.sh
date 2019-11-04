@@ -36,7 +36,11 @@ ${applyOutput}
     applyPayload=$(echo '{}' | jq --arg body "${applyCommentWrapper}" '.body = $body')
     applyCommentsURL=$(cat ${GITHUB_EVENT_PATH} | jq -r .pull_request.comments_url)
     echo "apply: info: commenting on the pull request"
-    curl -s -S -H "Authorization: token ${GITHUB_TOKEN}" --header "Content-Type: application/json" --data "${applyPayload}" "${applyCommentsURL}" > /dev/null
+    #curl -s -S -H "Authorization: token ${GITHUB_TOKEN}" --header "Content-Type: application/json" --data "${applyPayload}" "${applyCommentsURL}" > /dev/null
+    curl -s -S -H "Authorization: token ${GITHUB_TOKEN}" --header "Content-Type: application/json" --data "${applyPayload}" "${applyCommentsURL}"
+    echo "applyPayload: ${applyPayload}"
+    echo "applyCommentsURL: ${applyCommentsURL}"
+    
   fi
 
   exit ${applyExitCode}
