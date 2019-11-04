@@ -19,6 +19,8 @@ function terraformApply {
   echo "${applyOutput}"
   echo
 
+  echo "##### GITHUB_EVENT_NAME: $GITHUB_EVENT_NAME" 
+  echo "##### tfComment: ${tfComment}"
   # Comment on the pull request if necessary.
   if [ "$GITHUB_EVENT_NAME" == "pull_request" ] && [ "${tfComment}" == "1" ]; then
     applyCommentWrapper="#### \`terraform apply\` Failed
@@ -38,8 +40,8 @@ ${applyOutput}
     echo "apply: info: commenting on the pull request"
     #curl -s -S -H "Authorization: token ${GITHUB_TOKEN}" --header "Content-Type: application/json" --data "${applyPayload}" "${applyCommentsURL}" > /dev/null
     curl -s -S -H "Authorization: token ${GITHUB_TOKEN}" --header "Content-Type: application/json" --data "${applyPayload}" "${applyCommentsURL}"
-    echo "applyPayload: ${applyPayload}"
-    echo "applyCommentsURL: ${applyCommentsURL}"
+    echo "##### applyPayload: ${applyPayload}"
+    echo "##### applyCommentsURL: ${applyCommentsURL}"
     
   fi
 
