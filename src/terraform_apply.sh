@@ -11,8 +11,11 @@ function terraformApply {
     echo "apply: info: successfully applied Terraform configuration in ${tfWorkingDir}"
     echo "${applyOutput}"
     echo
+    echo "ekooooooo"
     exit ${applyExitCode}
+    echo "ekooooooo2"
   fi
+  echo "ekooooooo3"
 
   # Exit code of !0 indicates failure.
   echo "apply: error: failed to apply Terraform configuration in ${tfWorkingDir}"
