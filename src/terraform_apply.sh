@@ -12,6 +12,7 @@ function terraformApply {
     echo "${applyOutput}"
     echo
     echo "ekooooooo"
+    echo "aec: ${applyExitCode}"
     exit ${applyExitCode}
     echo "ekooooooo2"
   fi
