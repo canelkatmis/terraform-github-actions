@@ -11,23 +11,22 @@ function terraformApply {
     echo "apply: info: successfully applied Terraform configuration in ${tfWorkingDir}"
     echo "${applyOutput}"
     echo
-    echo "ekooooooo"
-    echo "aec: ${applyExitCode}"
-    exit ${applyExitCode}
-    echo "ekooooooo2"
+    applyCommentStatus="Success"
+  else
+    # Exit code of !0 indicates failure.
+    echo "apply: error: failed to apply Terraform configuration in ${tfWorkingDir}"
+    echo "${applyOutput}"
+    echo
+    applyCommentStatus="Failed"
   fi
-  echo "ekooooooo3"
 
-  # Exit code of !0 indicates failure.
-  echo "apply: error: failed to apply Terraform configuration in ${tfWorkingDir}"
-  echo "${applyOutput}"
-  echo
+
 
   echo "##### GITHUB_EVENT_NAME: $GITHUB_EVENT_NAME" 
   echo "##### tfComment: ${tfComment}"
   # Comment on the pull request if necessary.
   if [ "$GITHUB_EVENT_NAME" == "pull_request" ] && [ "${tfComment}" == "1" ]; then
-    applyCommentWrapper="#### \`terraform apply\` Failed
+    applyCommentWrapper="#### \`terraform apply\` ${applyCommentStatus}
 <details><summary>Show Output</summary>
 
 \`\`\`
