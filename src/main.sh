@@ -30,20 +30,50 @@ function parseInputs {
     echo "Input terraform_subcommand cannot be empty"
     exit 1
   fi
- 
+
   # Optional inputs
   tfWorkingDir="."
   if [ "${INPUT_TF_ACTIONS_WORKING_DIR}" != "" ] || [ "${INPUT_TF_ACTIONS_WORKING_DIR}" != "." ]; then
     tfWorkingDir=${INPUT_TF_ACTIONS_WORKING_DIR}
   fi
- 
+
   tfComment=0
   if [ "${INPUT_TF_ACTIONS_COMMENT}" == "1" ] || [ "${INPUT_TF_ACTIONS_COMMENT}" == "true" ]; then
     tfComment=1
   fi
+
+  tfCLICredentialsHostname=""
+  if [ "${INPUT_TF_ACTIONS_CLI_CREDENTIALS_HOSTNAME}" != "" ]; then
+    tfCLICredentialsHostname=${INPUT_TF_ACTIONS_CLI_CREDENTIALS_HOSTNAME}
+  fi
+
+  tfCLICredentialsToken=""
+  if [ "${INPUT_TF_ACTIONS_CLI_CREDENTIALS_TOKEN}" != "" ]; then
+    tfCLICredentialsToken=${INPUT_TF_ACTIONS_CLI_CREDENTIALS_TOKEN}
+  fi
+}
+
+function configureCLICredentials {
+  if [[ ! -f "${HOME}/.terraformrc" ]] && [[ "${tfCLICredentialsToken}" != "" ]]; then
+    cat > ${HOME}/.terraformrc << EOF
+credentials "${tfCLICredentialsHostname}" {
+  token = "${tfCLICredentialsToken}"
+}
+EOF
+  fi
 }
 
 function installTerraform {
+  if [[ "${tfVersion}" == "latest" ]]; then
+    echo "Checking the latest version of Terraform"
+    tfVersion=$(curl -sL https://releases.hashicorp.com/terraform/index.json | jq -r '.versions[].version' | grep -v '[-].*' | sort -rV | head -n 1)
+
+    if [[ -z "${tfVersion}" ]]; then
+      echo "Failed to fetch the latest version"
+      exit 1
+    fi
+  fi
+
   url="https://releases.hashicorp.com/terraform/${tfVersion}/terraform_${tfVersion}_linux_amd64.zip"
 
   echo "Downloading Terraform v${tfVersion}"
@@ -71,30 +101,36 @@ function main {
   source ${scriptDir}/terraform_validate.sh
   source ${scriptDir}/terraform_plan.sh
   source ${scriptDir}/terraform_apply.sh
+  source ${scriptDir}/terraform_output.sh
 
   parseInputs
+  configureCLICredentials
   cd ${GITHUB_WORKSPACE}/${tfWorkingDir}
 
   case "${tfSubcommand}" in
     fmt)
       installTerraform
-      terraformFmt
+      terraformFmt ${*}
       ;;
     init)
       installTerraform
-      terraformInit
+      terraformInit ${*}
       ;;
     validate)
       installTerraform
-      terraformValidate
+      terraformValidate ${*}
       ;;
     plan)
       installTerraform
-      terraformPlan
+      terraformPlan ${*}
       ;;
     apply)
       installTerraform
-      terraformApply
+      terraformApply ${*}
+      ;;
+    output)
+      installTerraform
+      terraformOutput ${*}
       ;;
     *)
       echo "Error: Must provide a valid value for terraform_subcommand"
@@ -103,4 +139,4 @@ function main {
   esac
 }
 
-main
+main "${*}"

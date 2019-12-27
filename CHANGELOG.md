@@ -1,5 +1,50 @@
 # Changelog
 
+## v0.6.4
+
+### Added
+
+* Added the ability to download latest stable Terraform version when `tf_actions_version` is set to `latest`.
+
+## v0.6.3
+
+### Added
+
+* Added the ability to configure a CLI credentials file to authenticate to Terraform Cloud/Enterprise.
+
+## v0.6.2
+
+### Added
+
+* Added an `output` subcommand and corresponding `tf_actions_output` output.
+
+### Fixed
+
+* Fixed improper passing of arguments to the subcommand. ([#114](https://github.com/hashicorp/terraform-github-actions/issues/114))
+
+## v0.6.1
+
+### Fixed
+
+* Fixed improper handling of `args` in each `terraform` command when `args` contained no value. ([#109](https://github.com/hashicorp/terraform-github-actions/issues/109)) ([#110](https://github.com/hashicorp/terraform-github-actions/issues/110))
+
+## v0.6.0
+
+### Added
+
+* Allow passing arguments using GitHub Actions `args` attribute. ([#105](https://github.com/hashicorp/terraform-github-actions/issues/105))
+
+### Changed
+
+* Updated examples to reflect new additions.
+
+## v0.5.4
+
+### Changed
+
+* Always post a comment on a pull request regardless of exit code when using `apply`. ([#97](https://github.com/hashicorp/terraform-github-actions/issues/97))
+* Pass comment content to `jq` using pipes instead of arguments.
+
 ## v0.5.3
 
 ### Fixed
