@@ -122,7 +122,7 @@ function main {
       ;;
     plan)
       installTerraform
-      terraformPlan ${*}
+      terraformPlan `echo ${tfSubcommand} | awk '{ $1=""; print substr($0,2) }'` ${*}
       ;;
     apply)
       installTerraform
