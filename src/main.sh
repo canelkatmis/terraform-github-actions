@@ -107,7 +107,7 @@ function main {
   configureCLICredentials
   cd ${GITHUB_WORKSPACE}/${tfWorkingDir}
 
-  case "${tfSubcommand}" in
+  case `echo ${tfSubcommand} | awk '{print $1;}'` in
     fmt)
       installTerraform
       terraformFmt ${*}
